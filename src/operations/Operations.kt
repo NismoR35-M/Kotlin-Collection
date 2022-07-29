@@ -1,5 +1,3 @@
-
-
 package operations
 
 data class Product(
@@ -14,6 +12,7 @@ class Receipt(
     val products: List<Product>,
     val isPaid: Boolean = false
 )
+
 
 class Store(
     val receipts: List<Receipt>,
@@ -59,4 +58,44 @@ fun main() {
 
         workers = listOf(firstWorker, secondWorker)
     )
+
+    /*Get all products sold*/
+    val receipts = store.receipts //Fetch the receipts
+    val productsList = receipts.map { it.products } // List<List<Product>>
+    println(productsList)
+    /*You can improve this further by using 'flatmap'*/
+    val allProducts = receipts.flatMap { it.products }
+    /*flatmap transform elements and flattens them to a single list*/
+    println(allProducts)
+    /*Prices of products or their sum*/
+    val allProductEarnings = receipts.flatMap { it.products }
+        .map { it.price }
+        .sumByDouble { it }
+    println(allProductEarnings)
+
+    //TODO : Filtering and Grouping Data
+    /* filtering by condition */
+    val paidReceipts = receipts.filter { it.isPaid }
+    println(paidReceipts)
+
+    //grouping values by condition
+    val paidUnpaid = receipts.partition { it.isPaid }
+    val (paid, unpaid) = paidUnpaid
+    println(paid)
+    println(unpaid)
+
+    val groupedByWorker = receipts.groupBy { it.seller } // Map<Worker, List<Receipt>>
+    println(groupedByWorker)
+
+    //TODO : Validating data
+    val areThereNoReceipts = receipts.isEmpty()
+    val areAllPaid = receipts.all { it.isPaid }
+    val nonePaid = receipts.none { it.isPaid }
+    val isAtleastOnePaid = receipts.any { it.isPaid }
+
+    //TODO : Looking up data
+    val receiptByIndex = receipts[0] // receipt.get(0)
+    val firstPaidReceipt = receipts.first { it.isPaid } //it can crash if there is none
+    val firstPaidReceiptOrNull = receipts.firstOrNull { it.isPaid } //either is paid or null
+    val lastByPredicate = receipts.last { !it.isPaid } //last which is not paid
 }
